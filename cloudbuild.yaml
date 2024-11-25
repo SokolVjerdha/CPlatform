@@ -1,0 +1,22 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', '${LOCATION}-docker.pkg.dev/$PROJECT_ID/sparkle-clean/api', '.']
+  
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '${LOCATION}-docker.pkg.dev/$PROJECT_ID/sparkle-clean/api']
+  
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'sparkle-clean-api'
+      - '--image'
+      - '${LOCATION}-docker.pkg.dev/$PROJECT_ID/sparkle-clean/api'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+
+images:
+  - '${LOCATION}-docker.pkg.dev/$PROJECT_ID/sparkle-clean/api'
